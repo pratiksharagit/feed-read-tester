@@ -13,13 +13,13 @@ var allFeeds = [
         url: 'http://blog.udacity.com/feed'
     }, {
         name: 'CSS Tricks',
-        url: 'http://feeds.feedburner.com/CssTricks'
+        url: 'https://feeds.feedburner.com/CssTricks'
     }, {
         name: 'HTML5 Rocks',
-        url: 'http://feeds.feedburner.com/html5rocks'
+        url: 'https://feeds.feedburner.com/html5rocks'
     }, {
         name: 'Linear Digressions',
-        url: 'http://feeds.feedburner.com/udacity-linear-digressions'
+        url: 'https://feeds.feedburner.com/udacity-linear-digressions'
     }
 ];
 
@@ -41,9 +41,12 @@ function init() {
  * which will be called after everything has run successfully.
  */
  function loadFeed(id, cb) {
+     // Throw an error if an out-of-bounds index is used
+     if (id > allFeeds.length - 1 || id < 0) {
+        throw new Error("Feed index out of bounds");
+     }
      var feedUrl = allFeeds[id].url,
-         feedName = allFeeds[id].name,
-         feed = new google.feeds.Feed(feedUrl);
+         feedName = allFeeds[id].name;
 
      $.ajax({
        type: "POST",
@@ -87,6 +90,7 @@ function init() {
 /* Google API: Loads the Feed Reader API and defines what function
  * to call when the Feed Reader API is done loading.
  */
+google.load('feeds', '1');
 google.setOnLoadCallback(init);
 
 /* All of this functionality is heavily reliant upon the DOM, so we
@@ -121,7 +125,15 @@ $(function() {
         var item = $(this);
 
         $('body').addClass('menu-hidden');
-        loadFeed(item.data('id'));
+
+        // Load relevant feed, catching any error if out-of-bounds index used
+        // (This error mot likely to happen unless there is a serious bug.)
+        try {
+            loadFeed(item.data('id'));
+        } catch(e) {
+            console.warn(e);
+        }
+
         return false;
     });
 

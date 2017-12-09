@@ -93,17 +93,16 @@ $(function() {
          */
 
         beforeEach(function(done) {
-            loadFeed(0, function() {
-            done();
-            });
+            loadFeed(1, done);
         });
         
          it('feed container has at least a single entry after loadFeed() call', function(){
-            var entryNum = $('.entry').length;
+            var entryNum = $('.feed .entry').length;
             expect(entryNum).toBeGreaterThan(0);
          });
 
     });
+    
     /* TODO: Write a new test suite named "New Feed Selection" */
     describe('New Feed Selection', function() {
 
@@ -115,24 +114,23 @@ $(function() {
         var oldFeedList;
         var newFeedList;
 
-        //beforeEach to wait for async calls to finish
+        // Reset feed to 0 before all tests begin;
         beforeEach(function(done) {
-            loadFeed(1, function() {
-                oldFeedList = $('.feed').html();
-                loadFeed(2, function() {
+            loadFeed(0, function() {
+                // Set oldFeedList for later comparison
+                oldFeedList = $('.feed .entry > h2').first().text();
                     done();
-                });
             });        
          });
 
-        //afterEach to reload first entry
-        afterEach(function() {
-            loadFeed(0);
+        // Allows testing of async functions
+        beforeEach(function(done) {
+            loadFeed(2, done);
         });
        
         it('content changes when loadFeed function is loaded', function(){
             expect(oldFeedList).toBeDefined();
-            newFeedList = $('feed').html();
+            newFeedList =  $('.feed .entry > h2').first().text();
             expect(newFeedList).toBeDefined();
             expect(oldFeedList).not.toEqual(newFeedList);
         });
