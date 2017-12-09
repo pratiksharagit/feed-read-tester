@@ -42,11 +42,16 @@ function init() {
  */
  function loadFeed(id, cb) {
      var feedUrl = allFeeds[id].url,
-         feedName = allFeeds[id].name;
+         feedName = allFeeds[id].name,
          feed = new google.feeds.Feed(feedUrl);
 
-    feed.load(function(result) {
-        if (!result.error) {
+     $.ajax({
+       type: "POST",
+       url: 'https://rsstojson.udacity.com/parseFeed',
+       data: JSON.stringify({url: feedUrl}),
+       contentType:"application/json",
+       success: function (result, status){
+
                  var container = $('.feed'),
                      title = $('.header-title'),
                      entries = result.feed.entries,
@@ -64,19 +69,25 @@ function init() {
                  entries.forEach(function(entry) {
                      container.append(entryTemplate(entry));
                  });
-        }
 
-        if (cb) {
-            cb();
-        }
-    });
-}   
+                 if (cb) {
+                     cb();
+                 }
+               },
+       error: function (result, status, err){
+                 //run only the callback without attempting to parse result due to error
+                 if (cb) {
+                     cb();
+                 }
+               },
+       dataType: "json"
+     });
+ }
 
 /* Google API: Loads the Feed Reader API and defines what function
  * to call when the Feed Reader API is done loading.
  */
- 
-google.load('feeds', '1');
+ google.load('feeds', '1');
 google.setOnLoadCallback(init);
 
 /* All of this functionality is heavily reliant upon the DOM, so we
