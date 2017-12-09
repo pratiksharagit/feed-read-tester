@@ -7,6 +7,8 @@ Testing the Feed Reader app using Javascript testing framework Jasmine.
 To view the feedreader website download all the files and open index.html in your browser.
 There should be several test results at the bottom of the screen that says "~ specs, ~ failures".
 
+live- https://pratiksharagit.github.io/feed-read-tester/
+
 
 ### Tests
 #### RSS Feeds:
